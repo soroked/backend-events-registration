@@ -1,4 +1,3 @@
-const events = require("../events.js");
 const Event = require("../models/event");
 const { User } = require("../models/user")
 
@@ -9,13 +8,12 @@ const getEvents = async (req, res) => {
   res.json(result);  
 }
 
-const getEventByID = async (req, res) => {
+const getUsers = async (req, res) => {
   const { id } = req.params;
-  const event = events.find((event) => event.id === id)
-  if (!event) {
-    throw HttpError(404, "Not Found");
-  }
-  res.json(event);  
+
+  const users = await User.find({ event: id })
+
+  res.json(users);
 }
 
 const registerToEvent = async (req, res) => {
@@ -33,6 +31,6 @@ const registerToEvent = async (req, res) => {
 
 module.exports = {
   getEvents: ctrlWrapper(getEvents),
-  getEventByID: ctrlWrapper(getEventByID),
+  getUsers: ctrlWrapper(getUsers),
   registerToEvent: ctrlWrapper(registerToEvent),
 }

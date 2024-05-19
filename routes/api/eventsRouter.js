@@ -8,8 +8,8 @@ const router = express.Router();
 
 router.get("/", ctrl.getEvents);
 
-router.get("/:id", ctrl.getEventByID);
+router.get("/participants/:id", ctrl.getUsers);
 
-router.post("/:id/registration", validateBody(userRegisterSchema), ctrl.registerToEvent);
+router.post("/registration/:id", validateBody(userRegisterSchema), ctrl.registerToEvent);
 
 module.exports = router;
