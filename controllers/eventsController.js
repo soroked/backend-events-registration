@@ -1,10 +1,12 @@
 const events = require("../events.js");
+const Event = require("../models/event");
+const { User } = require("../models/user")
 
 const { HttpError, ctrlWrapper } = require("../helpers");
-const { eventRegisterSchema } = require("../schemas/eventsSchemas.js");
 
-const getEvents = (req, res) => {
-  res.json(events);  
+const getEvents = async (req, res) => {
+  const result = await Event.find();
+  res.json(result);  
 }
 
 const getEventByID = async (req, res) => {
@@ -16,11 +18,16 @@ const getEventByID = async (req, res) => {
   res.json(event);  
 }
 
-const registerToEvent = (req, res) => {
-  const { error } = eventRegisterSchema.validate(req.body);
-  if (error) {
-    throw HttpError(400, error.message);
-  }
+const registerToEvent = async (req, res) => {
+  const { id: eventID } = req.params;
+  const newUser = await User.create({ ...req.body, event: eventID });
+
+  const { _id: userID } = newUser;
+  const event = await Event.findById(eventID);
+
+  event.participants.push(userID);
+  await event.save();
+
   res.status(201).json(req.body);
 }
 
